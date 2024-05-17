@@ -105,3 +105,14 @@ resource "aws_ecs_service" "my_service" {
   launch_type             = "FARGATE"
   network_configuration   = jsondecode(var.ecs_service_definition)["networkConfiguration"]
 }
+
+# Resource to build Docker image and push to ECR
+resource "null_resource" "docker_build" {
+  triggers = {
+    always_run = "${timestamp()}"
+  }
+
+  provisioner "local-exec" {
+    command = "docker build -t your-docker-image ."
+  }
+}
